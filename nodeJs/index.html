@@ -1,0 +1,43 @@
+<html>
+ <head>
+   <title>GEO API</title>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCzUI8LYmnHPyFrtRT8Q8IEREZfOygUl-U"></script>
+ </head>
+ <body>
+  <div id="map"  style="width: 100%;height: 800px;"></div>
+  <button id="locate">Localizza</button>
+  <script>
+    var pos = {lat: 41.2118952, lng: 8.2239023};
+    var map = new google.maps.Map(document.getElementById('map'), {center: pos , zoom: 5}); 
+	var address = null;
+    $(document).ready(function(){
+	  $.ajax({
+       type: "GET",
+       url: "https://jsonip.com/",
+       //dataType: "html", 
+	   success: function(data){
+          address = data.ip;
+       }
+      });
+	});
+	
+	$("#locate").click(function(){
+	    $.ajax({
+           type: "GET",
+           url: "https://3000-e52f07fe-f281-476c-b94c-145484538c7b.ws-eu01.gitpod.io/api/geo/"+address,
+          //dataType: "html", 
+	      success: function(result){
+		    new google.maps.Marker({
+    					position: {lat: result.ll[0], lng: result.ll[1]},
+    					map: map,
+    					title: "Tu sei Qui"
+  					});
+			map.setCenter(new google.maps.LatLng(result.ll[0], result.ll[1]));
+			map.setZoom(19);
+          }
+        });
+	});
+  </script>
+ </body>
+</html>
